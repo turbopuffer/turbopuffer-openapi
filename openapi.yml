@@ -1092,6 +1092,28 @@ components:
           type: boolean
           description: Whether to treat the last token in the query input as a literal prefix.
       additionalProperties: false
+    SaturateParams:
+      description: Additional parameters for the Saturate operator.
+      type: object
+      properties:
+        midpoint:
+          x-stainless-any: true
+          description: The midpoint of the Saturate operator.
+        exponent:
+          type: number
+          description: An exponent that helps further control the shape of the Saturate function.
+      additionalProperties: false
+    DecayParams:
+      description: Additional parameters for the Decay operator.
+      type: object
+      properties:
+        midpoint:
+          x-stainless-any: true
+          description: The midpoint of the Decay operator.
+        exponent:
+          type: number
+          description: An exponent that helps further control the shape of the Decay function.
+      additionalProperties: false
     Filter:
       anyOf:
         - type: array
@@ -1655,6 +1677,37 @@ components:
           additionalItems: false
           x-turbopuffer-variant-drop-on-conflict: true
         - $ref: "#/components/schemas/Filter"
+        - type: array
+          prefixItems:
+            - const: Attribute
+            - type: string
+              title: attr
+              description: the name of the attribute to rank by
+          additionalItems: false
+        - type: array
+          prefixItems:
+            - const: Saturate
+            - $ref: "#/components/schemas/RankByText"
+              title: subquery
+            - $ref: "#/components/schemas/SaturateParams"
+              title: params
+          additionalItems: false
+        - type: array
+          prefixItems:
+            - const: Decay
+            - $ref: "#/components/schemas/RankByText"
+              title: subquery
+            - $ref: "#/components/schemas/DecayParams"
+              title: params
+          additionalItems: false
+        - type: array
+          prefixItems:
+            - const: Dist
+            - $ref: "#/components/schemas/RankByText"
+              title: subquery
+            - x-stainless-any: true
+              title: origin
+          additionalItems: false
     RankByAttributeOrder:
       anyOf:
         - const: asc
