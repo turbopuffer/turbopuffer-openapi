@@ -174,14 +174,6 @@ paths:
                 filters:
                   x-stainless-any: true
                   description: Filter by attributes. Same syntax as the query endpoint.
-                queries:
-                  description: >
-                    Use specific query vectors for the measurement.
-                    If omitted, sampled from the index.
-                  type: array
-                  items:
-                    type: number
-                    x-turbopuffer-width: 32
                 include_ground_truth:
                   type: boolean
                   description: Include ground truth data (query vectors and true nearest neighbors) in the response.
