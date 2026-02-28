@@ -10,7 +10,7 @@ specification for the [turbopuffer API](https://turbopuffer.com/docs/auth).
 > nonstandard features. Breaking changes may be made at any time. Use at your own
 > risk!
 
-[**View the spec**](https://github.com/turbopuffer/turbopuffer-openapi/blob/main/openapi.yml)
+[**View the spec**](openapi.yml)
 
 ## Clients
 
