@@ -608,6 +608,10 @@ components:
         limit:
           anyOf:
             - type: integer
+              # Since Go doesn't support sum types, this syntax sugar is actually
+              # an ergonomic loss. So just force Go users to always use the full
+              # config by omitting this variant.
+              x-stainless-skip: [ go ]
             - { $ref: "#/components/schemas/Limit" }
     QueryConfig:
       description: Configuration options for a query.
