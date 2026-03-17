@@ -523,6 +523,14 @@ components:
           description: The number of billable logical bytes written to the namespace.
         query: { $ref: "#/components/schemas/QueryBilling" }
       required: [ billable_logical_bytes_written ]
+    WritePerformance:
+      description: The performance information for a write request.
+      type: object
+      properties:
+        server_total_ms:
+          type: integer
+          description: Request time measured on the server, in milliseconds.
+      required: [ server_total_ms ]
     WriteResult:
       description: The response to a successful write request.
       type: object
@@ -567,6 +575,7 @@ components:
             and at least one document was deleted.
           items: { $ref: "#/components/schemas/Id" }
         billing: { $ref: "#/components/schemas/WriteBilling" }
+        performance: { $ref: "#/components/schemas/WritePerformance" }
       required: [ status, message, rows_affected, billing ]
     Query:
       description: Query, filter, full-text search and vector search documents.
