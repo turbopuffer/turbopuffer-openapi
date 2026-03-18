@@ -465,6 +465,9 @@ components:
             The schema of the attributes attached to the documents.
           type: object
           additionalProperties: { $ref: "#/components/schemas/AttributeSchema" }
+        branch_from_namespace:
+          type: string
+          description: The namespace to create an instant, copy-on-write clone of.
         copy_from_namespace:
           oneOf:
             - type: string
