@@ -466,23 +466,7 @@ components:
           type: object
           additionalProperties: { $ref: "#/components/schemas/AttributeSchema" }
         branch_from_namespace: { $ref: "#/components/schemas/BranchFromNamespaceParams" }
-        copy_from_namespace:
-          oneOf:
-            - type: string
-              description: The namespace to copy documents from.
-            - type: object
-              title: copy-from-namespace-config
-              properties:
-                source_namespace:
-                  type: string
-                  description: The namespace to copy documents from.
-                source_api_key:
-                  type: string
-                  description: (Optional) An API key for the organization containing the source namespace
-                source_region:
-                  type: string
-                  description: (Optional) The region of the source namespace.
-              required: [ source_namespace ]
+        copy_from_namespace: { $ref: "#/components/schemas/CopyFromNamespaceParams" }
         delete_by_filter:
           description: The filter specifying which documents to delete.
           x-stainless-any: true
@@ -893,6 +877,27 @@ components:
       #     title: "vector"
       #     description: >
       #       A vector embedding of a specific dimensionality and element width.
+    CopyFromNamespaceParams:
+      oneOf:
+        - type: string
+          description: The namespace to copy documents from.
+          # Since Go doesn't support sum types, this syntax sugar is actually
+          # an ergonomic loss. So just force Go users to always use the full
+          # config by omitting this variant.
+          x-stainless-skip: [ go ]
+        - type: object
+          title: copy-from-namespace-config
+          properties:
+            source_namespace:
+              type: string
+              description: The namespace to copy documents from.
+            source_api_key:
+              type: string
+              description: (Optional) An API key for the organization containing the source namespace
+            source_region:
+              type: string
+              description: (Optional) The region of the source namespace.
+          required: [ source_namespace ]
     FullTextSearch:
       description: >
         Whether this attribute can be used as part of a BM25 full-text
