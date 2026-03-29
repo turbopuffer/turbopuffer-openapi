@@ -828,6 +828,10 @@ components:
           description: >
             Whether to enable Regex filters on this attribute.
           type: boolean
+        glob:
+          description: >
+            Whether to enable Glob filters on this attribute.
+          type: boolean
         full_text_search: { $ref: "#/components/schemas/FullTextSearch" }
         ann: { $ref: "#/components/schemas/Ann" }
       required: [ type ]
