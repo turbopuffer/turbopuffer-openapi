@@ -127,6 +127,25 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/ErrorResponse" }
+    patch:
+      description: Update metadata configuration for a namespace.
+      parameters:
+        - { $ref: "#/components/parameters/namespace" }
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/NamespaceMetadataPatch" }
+      responses:
+        "200":
+          description: The updated metadata of the namespace.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/NamespaceMetadata" }
+        default:
+          description: An error response.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
 
   /v1/namespaces/{namespace}/hint_cache_warm:
     get:
@@ -425,7 +444,27 @@ components:
                   type: integer
                   description: The number of bytes in the namespace that are in the write-ahead log but have not yet been indexed.
               required: [ status, unindexed_bytes ]
+        pinning: { $ref: "#/components/schemas/PinningConfig" }
       required: [ schema, approx_logical_bytes, approx_row_count, created_at, updated_at, encryption, index ]
+    NamespaceMetadataPatch:
+      description: Request to update namespace metadata configuration.
+      type: object
+      properties:
+        pinning:
+          description: |
+            Configuration for namespace pinning.
+            - Missing field: no change to pinning configuration
+            - `null` or `false`: explicitly remove pinning
+            - `true`: enable pinning with default configuration
+            - Object: set pinning configuration
+          oneOf:
+            - type: "null"
+            - type: boolean
+              # Since Go doesn't support sum types, this syntax sugar is actually
+              # an ergonomic loss. So just force Go users to always use the full
+              # config by omitting this variant.
+              x-stainless-skip: [ go ]
+            - { $ref: "#/components/schemas/PinningConfig" }
     Write:
       description: Create, update, or delete documents.
       type: object
@@ -1016,6 +1055,15 @@ components:
                 the fully-qualified resource name of the key. For AWS, the ARN
                 of the key.
           required: [ key_name ]
+    PinningConfig:
+      description: Configuration for namespace pinning.
+      type: object
+      properties:
+        replicas:
+          type: integer
+          format: int64
+          minimum: 1
+          description: The number of read replicas to provision. Defaults to 1 if not specified.
 
     ErrorResponse:
       description: The response to an unsuccessful request.
