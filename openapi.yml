@@ -197,6 +197,11 @@ paths:
                   type: boolean
                   description: Include ground truth data (query vectors and true nearest neighbors) in the response.
                   default: false
+                rank_by:
+                  description: >
+                    The ranking function to evaluate recall for. If provided,
+                    `num` must be either null or 1.
+                  x-stainless-any: true
       responses:
         "200":
           description: The status of the cache warm request.
