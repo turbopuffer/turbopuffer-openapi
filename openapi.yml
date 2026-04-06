@@ -449,7 +449,7 @@ components:
                   type: integer
                   description: The number of bytes in the namespace that are in the write-ahead log but have not yet been indexed.
               required: [ status, unindexed_bytes ]
-        pinning: { $ref: "#/components/schemas/PinningConfig" }
+        pinning: { $ref: "#/components/schemas/PinningConfigResponse" }
       required: [ schema, approx_logical_bytes, approx_row_count, created_at, updated_at, encryption, index ]
     NamespaceMetadataPatch:
       description: Request to update namespace metadata configuration.
@@ -1069,7 +1069,34 @@ components:
           format: int64
           minimum: 1
           description: The number of read replicas to provision. Defaults to 1 if not specified.
-
+    PinningConfigResponse:
+      description: >
+        Configuration for namespace pinning, along with the current status of
+        the pinned namespace.
+      allOf:
+        - $ref: "#/components/schemas/PinningConfig"
+        - type: object
+          properties:
+            status:
+              $ref: "#/components/schemas/PinningStatus"
+    PinningStatus:
+      description: Operational status for a pinned namespace.
+      type: object
+      properties:
+        updated_at:
+          type: string
+          format: date-time
+          description: The timestamp of the latest pinning status snapshot.
+        ready_replicas:
+          type: integer
+          format: int64
+          description: The number of replicas that are warm and serving traffic.
+        utilization:
+          type: number
+          description: >
+            Aggregate utilization for the pinned namespace, reported as a value
+            between 0.0 and 1.0.
+      required: [ updated_at, ready_replicas, utilization ]
     ErrorResponse:
       description: The response to an unsuccessful request.
       type: object
