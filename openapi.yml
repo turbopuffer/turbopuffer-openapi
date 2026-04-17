@@ -342,6 +342,58 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/ErrorResponse" }
 
+  /v2/namespaces/{namespace}?stainless_overload=branchFrom:
+    post:
+      description: Creates an instant, copy-on-write clone of a namespace.
+      parameters:
+        - { $ref: "#/components/parameters/namespace" }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                branch_from_namespace: { $ref: "#/components/schemas/BranchFromNamespaceParams" }
+              required: [ branch_from_namespace ]
+              additionalProperties: false
+      responses:
+        "200":
+          description: The status of the request.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WriteResult" }
+        default:
+          description: An error response.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+
+  /v2/namespaces/{namespace}?stainless_overload=copyFrom:
+    post:
+      description: Copy all documents from another namespace into this one.
+      parameters:
+        - { $ref: "#/components/parameters/namespace" }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                copy_from_namespace: { $ref: "#/components/schemas/CopyFromNamespaceParams" }
+              required: [ copy_from_namespace ]
+              additionalProperties: false
+      responses:
+        "200":
+          description: The status of the request.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WriteResult" }
+        default:
+          description: An error response.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+
   /v2/namespaces/{namespace}/explain_query:
     post:
       description: Explain a query plan.
