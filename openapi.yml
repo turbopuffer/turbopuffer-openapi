@@ -934,12 +934,14 @@ components:
           type: boolean
         full_text_search: { $ref: "#/components/schemas/FullTextSearch" }
         ann: { $ref: "#/components/schemas/Ann" }
+        sparse_knn: { $ref: "#/components/schemas/SparseKnn" }
       required: [ type ]
     AttributeType:
       description: >
         The data type of the attribute.
         Valid values: string, int, uint, float, uuid, datetime, bool, []string,
-        []int, []uint, []float, []uuid, []datetime, []bool, [DIMS]f16, [DIMS]f32.
+        []int, []uint, []float, []uuid, []datetime, []bool, [DIMS]f16, [DIMS]f32,
+        {}f16.
       type: string
       # NOTE(benesch): it would be nice to use a stronger type than a string
       # here. Unfortunately the vector type includes an arbitrary dimension
@@ -1102,6 +1104,27 @@ components:
       type: object
       properties:
         distance_metric: { $ref: "#/components/schemas/DistanceMetric" }
+    SparseKnn:
+      description: >
+        Whether to create a sparse kNN index for the attribute. Requires the
+        `{}f16` type.
+      type: object
+      properties:
+        distance_metric: { $ref: "#/components/schemas/SparseDistanceMetric" }
+      required: [ distance_metric ]
+    SparseDistanceMetric:
+      anyOf:
+        - const: dot_product
+          description: >
+            Defined as `sum(x * y)`. Higher is better.
+      description: A function used to calculate sparse vector similarity.
+    SparseVector:
+      description: >
+        A sparse vector represented as a map from string dimension names to
+        float weights. For example: `{"token_a": 0.5, "token_b": 1.2}`.
+      type: object
+      additionalProperties:
+        type: number
     Encryption:
       description: The encryption configuration for a namespace.
       type: object
@@ -1758,6 +1781,20 @@ components:
             x-turbopuffer-width: 32
           title: value
       additionalItems: false
+    RankBySparseVector:
+      type: array
+      prefixItems:
+        - type: string
+          title: attr
+          description: The name of the sparse vector attribute to rank by.
+        - const: SparseKNN
+        - $ref: "#/components/schemas/SparseVector"
+          title: value
+          description: >
+            A sparse vector query. The score is computed based on the distance
+            metric specified in the `distance_metric` field of the sparse
+            vector attribute schema.
+      additionalItems: false
     RankByText:
       anyOf:
         - type: array
@@ -1899,6 +1936,7 @@ components:
       anyOf:
         - { $ref: "#/components/schemas/RankByVector" }
         - { $ref: "#/components/schemas/RankByKnn" }
+        - { $ref: "#/components/schemas/RankBySparseVector" }
         - { $ref: "#/components/schemas/RankByText" }
         - { $ref: "#/components/schemas/RankByAttribute" }
         - { $ref: "#/components/schemas/RankByAttributes" }
