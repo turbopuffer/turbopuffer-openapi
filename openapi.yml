@@ -127,6 +127,8 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/ErrorResponse" }
+
+  /v1/namespaces/{namespace}/metadata:
     patch:
       description: Update metadata configuration for a namespace.
       parameters:
