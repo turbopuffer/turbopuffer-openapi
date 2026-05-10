@@ -668,7 +668,7 @@ components:
             before computing aggregates. Aggregates are computed separately
             for each group.
           type: array
-          items: { type: string }
+          items: { x-stainless-any: true }
         distance_metric: { $ref: "#/components/schemas/DistanceMetric" }
         limit:
           anyOf:
@@ -1206,6 +1206,32 @@ components:
           # where it conflicts, but that's a price we're willing to pay.
           x-turbopuffer-variant-drop-on-conflict: true
           additionalItems: false
+    GroupBy:
+      description: Specifies a value to group documents by.
+      anyOf:
+        - description: An attribute name to group documents by.
+          type: string
+          x-turbopuffer-variant-name: Attr
+        - description: >
+            An expression to group documents by, with an explicit output
+            attribute name.
+          type: object
+          x-turbopuffer-variant-name: Expr
+          additionalProperties:
+            $ref: "#/components/schemas/GroupByFunction"
+    GroupByFunction:
+      description: A function that produces group keys.
+      anyOf:
+        - description: >
+            Use the `ForEachUnique` operator to explode an array attribute when
+            grouping. Each unique element of the array becomes a separate group.
+          type: array
+          prefixItems:
+            - const: ForEachUnique
+            - type: string
+              title: attr
+              description: The name of the array attribute to explode.
+          additionalItems: false
     Expr:
       description: An expression that can be used in a filter.
       anyOf:
@@ -1735,7 +1761,7 @@ components:
               items: { $ref: "#/components/schemas/Filter" }
               title: filters
           additionalItems: false
-    RankByVector:
+    RankByAnn:
       type: array
       prefixItems:
         - type: string
@@ -1761,7 +1787,7 @@ components:
             x-turbopuffer-width: 32
           title: value
       additionalItems: false
-    RankBySparseVector:
+    RankBySparseKnn:
       type: array
       prefixItems:
         - type: string
@@ -1915,9 +1941,9 @@ components:
         then by the second attribute for ties, and so on.
     RankBy:
       anyOf:
-        - { $ref: "#/components/schemas/RankByVector" }
+        - { $ref: "#/components/schemas/RankByAnn" }
         - { $ref: "#/components/schemas/RankByKnn" }
-        - { $ref: "#/components/schemas/RankBySparseVector" }
+        - { $ref: "#/components/schemas/RankBySparseKnn" }
         - { $ref: "#/components/schemas/RankByText" }
         - { $ref: "#/components/schemas/RankByAttribute" }
         - { $ref: "#/components/schemas/RankByAttributes" }
