@@ -1288,6 +1288,34 @@ components:
           type: boolean
           description: Whether to treat the last token in the query input as a literal prefix.
       additionalProperties: false
+    FuzzyMaxEditDistance:
+      description: An edit distance threshold for the Fuzzy filter.
+      type: object
+      properties:
+        min_query_chars:
+          type: integer
+          description: >
+            Minimum number of characters in a query where this distance applies. Must be at least 3 · (distance + 1).
+        distance:
+          type: integer
+          minimum: 0
+          maximum: 2
+          description: The maximum edit distance to allow.
+      required: [ min_query_chars, distance ]
+      additionalProperties: false
+    FuzzyParams:
+      description: Additional parameters for the Fuzzy filter.
+      type: object
+      properties:
+        max_edit_distance:
+          type: array
+          minItems: 1
+          description: >
+            Maximum edit distance allowed at each query length. Queries shorter
+            than the first threshold return no matches.
+          items: { $ref: "#/components/schemas/FuzzyMaxEditDistance" }
+      required: [ max_edit_distance ]
+      additionalProperties: false
     SaturateParams:
       description: Additional parameters for the Saturate operator.
       type: object
@@ -1589,6 +1617,21 @@ components:
             - type: string
               title: value
               description: The regular expression to match against.
+          additionalItems: false
+        - type: array
+          description: >
+            Fuzzy substring match against string values. Requires the fuzzy
+            schema attribute to be enabled before use.
+          prefixItems:
+            - type: string
+              title: attr
+              description: The name of the attribute to apply the filter to.
+            - const: Fuzzy
+            - type: string
+              title: value
+              description: The string to fuzzy-match against.
+            - $ref: "#/components/schemas/FuzzyParams"
+              title: params
           additionalItems: false
         - type: array
           description: >
