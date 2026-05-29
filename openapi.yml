@@ -910,6 +910,7 @@ components:
         full_text_search: { $ref: "#/components/schemas/FullTextSearch" }
         ann: { $ref: "#/components/schemas/Ann" }
         sparse_knn: { $ref: "#/components/schemas/SparseKnn" }
+        embed: { $ref: "#/components/schemas/AttributeEmbed" }
       required: [ type ]
     AttributeType:
       description: >
@@ -1080,6 +1081,46 @@ components:
       type: object
       properties:
         distance_metric: { $ref: "#/components/schemas/DistanceMetric" }
+    AttributeEmbed:
+      description: >
+        Whether to automatically embed this string attribute into a vector
+        attribute. Can be a model name, a detailed configuration object, or
+        `null` to remove an existing embedding configuration.
+      oneOf:
+        - type: string
+          description: >
+            The model to use for embedding. If you only specify a model, turbopuffer
+            will generate a vector attribute for you to store the embedding.
+          # Since Go doesn't support sum types, this syntax sugar is actually
+          # an ergonomic loss. So just force Go users to always use the full
+          # config by omitting this variant.
+          x-stainless-skip: [ go ]
+        - { $ref: "#/components/schemas/AttributeEmbedConfig" }
+        - type: "null"
+          description: Disable automatic embedding for this attribute.
+    AttributeEmbedConfig:
+      description: Configuration options for automatic embedding.
+      type: object
+      properties:
+        attribute:
+          type: string
+          description: >
+            The name of an existing vector attribute to store embeddings in.
+            If omitted, turbopuffer will generate a computed vector attribute
+            named `$embed_<attribute>`.
+        model:
+          type: string
+          description: >
+            The model to use for embedding. See our documentation for a list
+            of models supported in each region.
+        dims:
+          type: integer
+          description: >
+            The dimensionality to embed at. If not set, will pick the default
+            for this model. If you're storing embeddings in an existing attribute,
+            this can be omitted, and may not be set to a value other than the
+            dimensions of that attribute.
+      required: [ model ]
     SparseKnn:
       description: >
         Whether to create a sparse kNN index for the attribute. Requires the
@@ -1233,9 +1274,44 @@ components:
               description: The name of the array attribute to explode.
           additionalItems: false
     Expr:
-      description: An expression that can be used in a filter.
+      description: An expression that computes a value.
       anyOf:
         - { $ref: "#/components/schemas/ExprRefNew" }
+        - type: array
+          description: >
+            Embed the input text using the embedding model configured for the
+            attribute the expression is evaluated against.
+          prefixItems:
+            - const: Embed
+            - type: string
+              title: value
+              description: The input text to embed.
+          additionalItems: false
+          x-turbopuffer-variant-name: Embed
+        - type: array
+          description: >
+            Embed the input text using the specified embedding model, overriding
+            the model configured for the attribute the expression is evaluated
+            against.
+          prefixItems:
+            - const: Embed
+            - type: string
+              title: value
+              description: The input text to embed.
+            - $ref: "#/components/schemas/EmbedParams"
+              title: params
+          additionalItems: false
+          x-turbopuffer-variant-name: EmbedWithParams
+    EmbedParams:
+      description: Additional (optional) parameters for the Embed expression.
+      type: object
+      properties:
+        model:
+          type: string
+          description: >
+            The model to use for embedding, overriding the model configured for
+            the attribute.
+      additionalProperties: false
     ExprRefNew:
       description: A reference to an attribute in a new document.
       type: object
@@ -1818,6 +1894,16 @@ components:
             x-turbopuffer-width: 32
           title: value
       additionalItems: false
+    RankByAnnExpr:
+      type: array
+      prefixItems:
+        - type: string
+          title: attr
+          description: The name of the embedded attribute to rank by.
+        - const: ANN
+        - $ref: "#/components/schemas/Expr"
+          title: expr
+      additionalItems: false
     RankByKnn:
       type: array
       prefixItems:
@@ -1830,6 +1916,16 @@ components:
             type: number
             x-turbopuffer-width: 32
           title: value
+      additionalItems: false
+    RankByKnnExpr:
+      type: array
+      prefixItems:
+        - type: string
+          title: attr
+          description: The name of the embedded attribute to rank by.
+        - const: kNN
+        - $ref: "#/components/schemas/Expr"
+          title: expr
       additionalItems: false
     RankBySparseKnn:
       type: array
@@ -1986,7 +2082,9 @@ components:
     RankBy:
       anyOf:
         - { $ref: "#/components/schemas/RankByAnn" }
+        - { $ref: "#/components/schemas/RankByAnnExpr" }
         - { $ref: "#/components/schemas/RankByKnn" }
+        - { $ref: "#/components/schemas/RankByKnnExpr" }
         - { $ref: "#/components/schemas/RankBySparseKnn" }
         - { $ref: "#/components/schemas/RankByText" }
         - { $ref: "#/components/schemas/RankByAttribute" }
