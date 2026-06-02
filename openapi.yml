@@ -332,6 +332,11 @@ paths:
                     queries:
                       type: array
                       items: { $ref: "#/components/schemas/Query" }
+                    rerank_by:
+                      description: >
+                        How to combine the rows returned by each sub-query into
+                        a single ranked list.
+                      x-stainless-any: true
       responses:
         "200":
           description: The schema of the namespace.
@@ -2089,6 +2094,33 @@ components:
         - { $ref: "#/components/schemas/RankByText" }
         - { $ref: "#/components/schemas/RankByAttribute" }
         - { $ref: "#/components/schemas/RankByAttributes" }
+    RrfParams:
+      description: Configuration options for RRF.
+      type: object
+      properties:
+        rank_constant:
+          type: integer
+          description: >
+            RRF rank constant (`k`). Must be greater than zero.
+            Defaults to `60`.
+      additionalProperties: false
+    RerankBy:
+      description: >
+        Configuration for combining the rows returned by a multi-query into a
+        single ranked list.
+      anyOf:
+        - type: array
+          description: Rerank with RRF.
+          prefixItems:
+            - const: RRF
+          additionalItems: false
+        - type: array
+          description: Rerank with RRF.
+          prefixItems:
+            - const: RRF
+            - $ref: "#/components/schemas/RrfParams"
+          additionalItems: false
+          x-turbopuffer-variant-name: RrfWithParams
 
   securitySchemes:
     bearerAuth:
