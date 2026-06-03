@@ -1063,13 +1063,14 @@ components:
         - const: tamil
         - const: turkish
     Tokenizer:
-      description: The tokenizer to use for full-text search on an attribute. Defaults to `word_v3`.
+      description: The tokenizer to use for full-text search on an attribute. Defaults to `word_v4`.
       oneOf:
         - const: pre_tokenized_array
         - const: word_v0
         - const: word_v1
         - const: word_v2
         - const: word_v3
+        - const: word_v4
     Ann:
       description: >
         Whether to create an approximate nearest neighbor index for the
