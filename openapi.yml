@@ -1396,6 +1396,11 @@ components:
             Maximum edit distance allowed at each query length. Queries shorter
             than the first threshold return no matches.
           items: { $ref: "#/components/schemas/FuzzyMaxEditDistance" }
+        case_sensitive:
+          type: boolean
+          description: >
+            Whether searching with Fuzzy filter is case-sensitive. Defaults to `true`
+            (i.e. case-sensitive).
       required: [ max_edit_distance ]
       additionalProperties: false
     SaturateParams:
