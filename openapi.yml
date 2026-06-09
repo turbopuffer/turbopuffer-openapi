@@ -378,7 +378,16 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: { $ref: "#/components/schemas/CopyFromNamespaceConfig" }
+            schema:
+              allOf:
+                - { $ref: "#/components/schemas/CopyFromNamespaceConfig" }
+                - type: object
+                  properties:
+                    dest_encryption:
+                      description: >
+                        (Optional) The encryption configuration for the
+                        destination namespace.
+                      $ref: "#/components/schemas/Encryption"
       responses:
         "200":
           description: The status of the request.
