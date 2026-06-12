@@ -1,6 +1,6 @@
 # turbopuffer OpenAPI specification
 
-This repository contains an [OpenAPI](https://spec.openapis.org/oas/v3.1.0.html) specification for the [Turbopuffer API](https://turbopuffer.com/docs/overview).
+This repository contains an [OpenAPI](https://spec.openapis.org/oas/v3.1.0.html) specification for the [Turbopuffer API](https://turbopuffer.com/docs/api-overview).
 
 It is generated with [Stainless](https://www.stainless.com/).
 
