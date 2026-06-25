@@ -1914,6 +1914,21 @@ components:
             x-turbopuffer-width: 32
           title: value
       additionalItems: false
+    RankByAnnMulti:
+      type: array
+      prefixItems:
+        - type: string
+          title: attr
+          description: The name of the vector array attribute to rank by.
+        - const: ANN
+        - type: array
+          items:
+            type: array
+            items:
+              type: number
+              x-turbopuffer-width: 32
+          title: value
+      additionalItems: false
     RankByAnnExpr:
       type: array
       prefixItems:
@@ -2102,6 +2117,7 @@ components:
     RankBy:
       anyOf:
         - { $ref: "#/components/schemas/RankByAnn" }
+        - { $ref: "#/components/schemas/RankByAnnMulti" }
         - { $ref: "#/components/schemas/RankByAnnExpr" }
         - { $ref: "#/components/schemas/RankByKnn" }
         - { $ref: "#/components/schemas/RankByKnnExpr" }
