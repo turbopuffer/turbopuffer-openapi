@@ -1952,6 +1952,21 @@ components:
             x-turbopuffer-width: 32
           title: value
       additionalItems: false
+    RankByKnnMulti:
+      type: array
+      prefixItems:
+        - type: string
+          title: attr
+          description: The name of the vector array attribute to rank by.
+        - const: kNN
+        - type: array
+          items:
+            type: array
+            items:
+              type: number
+              x-turbopuffer-width: 32
+          title: value
+      additionalItems: false
     RankByKnnExpr:
       type: array
       prefixItems:
@@ -2120,6 +2135,7 @@ components:
         - { $ref: "#/components/schemas/RankByAnnMulti" }
         - { $ref: "#/components/schemas/RankByAnnExpr" }
         - { $ref: "#/components/schemas/RankByKnn" }
+        - { $ref: "#/components/schemas/RankByKnnMulti" }
         - { $ref: "#/components/schemas/RankByKnnExpr" }
         - { $ref: "#/components/schemas/RankBySparseKnn" }
         - { $ref: "#/components/schemas/RankByText" }
