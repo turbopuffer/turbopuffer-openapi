@@ -491,6 +491,7 @@ components:
                   description: The number of bytes in the namespace that are in the write-ahead log but have not yet been indexed.
               required: [ status, unindexed_bytes ]
         pinning: { $ref: "#/components/schemas/PinningConfigResponse" }
+        sharding: { $ref: "#/components/schemas/ShardingConfig" }
       required: [ schema, approx_logical_bytes, approx_row_count, created_at, updated_at, encryption, index ]
     NamespaceMetadataPatch:
       description: Request to update namespace metadata configuration.
@@ -569,6 +570,7 @@ components:
             For filtered and conditional writes, only IDs for writes that succeeded will be included.
           default: false
         encryption: { $ref: "#/components/schemas/Encryption" }
+        sharding: { $ref: "#/components/schemas/ShardingConfig" }
         disable_backpressure:
           type: boolean
           description: >
@@ -1210,6 +1212,23 @@ components:
             Aggregate utilization for the pinned namespace, reported as a value
             between 0.0 and 1.0.
       required: [ updated_at, ready_replicas, utilization ]
+
+    ShardingConfig:
+      description: >
+        Configuration for namespace sharding, which partitions a namespace's
+        documents across multiple internal shards to scale indexing and query
+        throughput beyond a single machine.
+
+        Sharding can only be configured on a namespace's inaugural write, and
+        cannot be added to or changed on an existing namespace.
+      type: object
+      properties:
+        num_shards:
+          type: integer
+          format: int32
+          minimum: 1
+          description: The number of shards to partition the namespace into.
+      required: [ num_shards ]
 
     ErrorResponse:
       description: The response to an unsuccessful request.
