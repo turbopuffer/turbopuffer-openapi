@@ -685,6 +685,13 @@ components:
             for each group.
           type: array
           items: { x-stainless-any: true }
+        compute_attributes:
+          description: >
+            Computes additional values on documents returned by a query. Each
+            key is the name of the computed attribute; each value is an
+            expression describing how to compute it.
+          type: object
+          additionalProperties: { $ref: "#/components/schemas/ComputeAttributes" }
         distance_metric: { $ref: "#/components/schemas/DistanceMetric" }
         limit:
           anyOf:
@@ -2193,6 +2200,115 @@ components:
             - $ref: "#/components/schemas/RrfParams"
           additionalItems: false
           x-turbopuffer-variant-name: RrfWithParams
+    ComputeAttributes:
+      description: An expression describing how to compute an additional attribute.
+      anyOf:
+        - { $ref: "#/components/schemas/ComputeAttributesVectorDist" }
+        - { $ref: "#/components/schemas/ComputeAttributesHighlight" }
+        - { $ref: "#/components/schemas/ComputeAttributesHighlightWithConfig" }
+        - $ref: "#/components/schemas/RankBy"
+          title: Score
+    ComputeAttributesVectorDist:
+      type: array
+      description: The distance between a vector attribute and a query vector.
+      prefixItems:
+        - type: string
+          title: attr
+          description: The name of the vector attribute.
+        - const: VectorDist
+        - $ref: "#/components/schemas/Vector"
+          title: value
+      additionalItems: false
+    ComputeAttributesHighlight:
+      type: array
+      description: Highlights matching fragments of a text attribute.
+      prefixItems:
+        - const: Highlight
+        - type: string
+          title: attr
+          description: The name of the text attribute to highlight.
+      additionalItems: false
+    ComputeAttributesHighlightWithConfig:
+      type: array
+      description: >
+        Highlights matching fragments of a text attribute, with additional
+        configuration.
+      prefixItems:
+        - const: Highlight
+        - type: string
+          title: attr
+          description: The name of the text attribute to highlight.
+        - $ref: "#/components/schemas/HighlightConfig"
+          title: config
+      additionalItems: false
+    HighlightConfig:
+      description: Additional (optional) parameters for the Highlight compute expression.
+      type: object
+      properties:
+        rank_fragments_by:
+          $ref: "#/components/schemas/RankBy"
+          description: >
+            How to rank candidate fragments within the attribute before
+            selecting the top `fragment_limit`. Defaults to the query's `rank_by`.
+        fragment_by: { $ref: "#/components/schemas/HighlightFragmentBy" }
+        fragment_limit:
+          type: integer
+          description: The maximum number of fragments to return. Defaults to `3`.
+        include_offsets: { $ref: "#/components/schemas/HighlightOffsetUnits" }
+      additionalProperties: false
+    HighlightFragmentBy:
+      description: How to split a text attribute into fragments for highlighting.
+      anyOf:
+        - const: none
+          description: Treat the whole attribute as a single fragment.
+        - const: sentence
+          description: Split the attribute into sentences. This is the default.
+        - const: paragraph
+          description: Split the attribute into paragraphs.
+        - const: word
+          description: Split the attribute into individual words.
+    HighlightOffsetUnits:
+      description: The units to report highlighted fragment offsets in.
+      anyOf:
+        - const: utf-8
+        - const: utf-16
+        - const: codepoints
+    HighlightMatch:
+      description: >
+        A single matched fragment for a `Highlight` compute attribute. A
+        `Highlight` compute attribute's value in the response is an array of
+        these objects, one per matching fragment.
+      type: object
+      properties:
+        text:
+          type: string
+          description: The text of the matched fragment.
+        fragment_range:
+          description: >
+            The `[start, end]` offset of this fragment within the original
+            attribute value, in the units requested by `include_offsets`.
+            Omitted if `include_offsets` was not set.
+          type: array
+          items: { type: integer }
+          minItems: 2
+          maxItems: 2
+        match_ranges:
+          description: >
+            The `[start, end]` offsets of matched spans within `text`, in the
+            units requested by `include_offsets`. Omitted if `include_offsets`
+            was not set.
+          type: array
+          items:
+            type: array
+            items: { type: integer }
+            minItems: 2
+            maxItems: 2
+        array_index:
+          description: >
+            The index into the array, if the highlighted attribute is an
+            array of strings. Omitted for non-array attributes.
+          type: integer
+      required: [ text ]
 
   securitySchemes:
     bearerAuth:
