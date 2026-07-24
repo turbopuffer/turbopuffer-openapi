@@ -2238,10 +2238,10 @@ components:
         - type: string
           title: attr
           description: The name of the text attribute to highlight.
-        - $ref: "#/components/schemas/HighlightConfig"
+        - $ref: "#/components/schemas/HighlightConfigParams"
           title: config
       additionalItems: false
-    HighlightConfig:
+    HighlightConfigParams:
       description: Additional (optional) parameters for the Highlight compute expression.
       type: object
       properties:
