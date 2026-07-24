@@ -691,7 +691,7 @@ components:
             key is the name of the computed attribute; each value is an
             expression describing how to compute it.
           type: object
-          additionalProperties: { $ref: "#/components/schemas/ComputeAttributes" }
+          additionalProperties: true
         distance_metric: { $ref: "#/components/schemas/DistanceMetric" }
         limit:
           anyOf:
