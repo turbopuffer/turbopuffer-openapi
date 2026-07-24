@@ -2246,10 +2246,10 @@ components:
       type: object
       properties:
         rank_fragments_by:
-          $ref: "#/components/schemas/RankBy"
           description: >
             How to rank candidate fragments within the attribute before
             selecting the top `fragment_limit`. Defaults to the query's `rank_by`.
+          x-stainless-any: true
         fragment_by: { $ref: "#/components/schemas/HighlightFragmentBy" }
         fragment_limit:
           type: integer
