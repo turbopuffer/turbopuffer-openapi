@@ -2216,7 +2216,10 @@ components:
           title: attr
           description: The name of the vector attribute.
         - const: VectorDist
-        - $ref: "#/components/schemas/Vector"
+        - type: array
+          items:
+            type: number
+            x-turbopuffer-width: 32
           title: value
       additionalItems: false
     ComputeAttributesHighlight:
