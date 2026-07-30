@@ -2182,6 +2182,16 @@ components:
           description: >
             RRF rank constant (`k`). Must be greater than zero.
             Defaults to `60`.
+        weights:
+          type: array
+          description: >
+            A positive weight for each subquery, in the same order as `queries`.
+            The number of weights must match the number of subqueries.
+            When omitted, every subquery has a weight of `1`.
+          items:
+            type: number
+            format: float
+            exclusiveMinimum: 0
       additionalProperties: false
     RerankBy:
       description: >
