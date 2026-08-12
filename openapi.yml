@@ -337,6 +337,9 @@ paths:
                         How to combine the rows returned by each sub-query into
                         a single ranked list.
                       x-stainless-any: true
+                    limit:
+                      description: Limits the total number of reranked documents returned.
+                      $ref: "#/components/schemas/RerankLimit"
       responses:
         "200":
           description: The schema of the namespace.
@@ -721,6 +724,19 @@ components:
                     Eventual consistency. Does not require a round-trip to
                     object storage, but may not see the latest writes.
               description: The query's consistency level.
+    RerankLimit:
+      anyOf:
+        - type: integer
+          # Since Go doesn't support sum types, this syntax sugar is actually
+          # an ergonomic loss. So just force Go users to always use the full
+          # config by omitting this variant.
+          x-stainless-skip: [ go ]
+        - type: object
+          required: [ total ]
+          additionalProperties: false
+          properties:
+            total:
+              type: integer
     QueryBilling:
       description: The billing information for a query.
       type: object
