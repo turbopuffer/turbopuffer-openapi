@@ -1235,12 +1235,21 @@ components:
           type: integer
           format: int64
           description: The number of replicas that are warm and serving traffic.
+        replicas:
+          type: integer
+          format: int64
+          description: >
+            The number of running replicas for the namespace. Replicas are
+            billed once running, even before they finish warming their caches
+            and become ready to serve traffic. This count is updated
+            independently and may briefly disagree with the other status
+            fields.
         utilization:
           type: number
           description: >
             Aggregate utilization for the pinned namespace, reported as a value
             between 0.0 and 1.0.
-      required: [ updated_at, ready_replicas, utilization ]
+      required: [ updated_at, ready_replicas, replicas, utilization ]
 
     ShardingConfig:
       description: >
