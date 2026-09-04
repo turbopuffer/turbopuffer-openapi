@@ -495,6 +495,10 @@ components:
               required: [ status, unindexed_bytes ]
         pinning: { $ref: "#/components/schemas/PinningConfigResponse" }
         sharding: { $ref: "#/components/schemas/ShardingConfig" }
+        read_only:
+          type: boolean
+          description: >
+            Whether document and schema writes are rejected. Omitted when `false`.
       required: [ schema, approx_logical_bytes, approx_row_count, created_at, updated_at, encryption, index ]
     NamespaceMetadataPatch:
       description: Request to update namespace metadata configuration.
@@ -515,6 +519,12 @@ components:
               # config by omitting this variant.
               x-stainless-skip: [ go ]
             - { $ref: "#/components/schemas/PinningConfig" }
+        read_only:
+          type: boolean
+          description: >
+            Set to `true` to reject document and schema writes, or `false` to
+            allow them. Writes already in progress may still commit. Metadata
+            updates remain available.
     Write:
       description: Create, update, or delete documents.
       type: object
