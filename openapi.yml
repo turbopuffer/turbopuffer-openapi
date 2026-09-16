@@ -339,7 +339,13 @@ paths:
                       x-stainless-any: true
                     limit:
                       description: Limits the total number of reranked documents returned.
-                      $ref: "#/components/schemas/RerankLimit"
+                      anyOf:
+                        - type: integer
+                          # Since Go doesn't support sum types, this syntax sugar is actually
+                          # an ergonomic loss. So just force Go users to always use the full
+                          # config by omitting this variant.
+                          x-stainless-skip: [ go ]
+                        - { $ref: "#/components/schemas/RerankLimit" }
                     offset:
                       description: Number of reranked documents to skip before returning results. Requires `rerank_by` and `limit`.
                       type: integer
@@ -745,18 +751,14 @@ components:
                     object storage, but may not see the latest writes.
               description: The query's consistency level.
     RerankLimit:
-      anyOf:
-        - type: integer
-          # Since Go doesn't support sum types, this syntax sugar is actually
-          # an ergonomic loss. So just force Go users to always use the full
-          # config by omitting this variant.
-          x-stainless-skip: [ go ]
-        - type: object
-          required: [ total ]
-          additionalProperties: false
-          properties:
-            total:
-              type: integer
+      description: Limits the total number of reranked documents returned.
+      type: object
+      additionalProperties: false
+      properties:
+        total:
+          description: Limits the total number of documents returned after reranking.
+          type: integer
+      required: [ total ]
     QueryBilling:
       description: The billing information for a query.
       type: object
