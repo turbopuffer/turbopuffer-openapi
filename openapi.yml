@@ -5,7 +5,8 @@ info:
   version: "0.0.1"
   description: turbopuffer is a fast search engine that combines vector and full-text search using object storage.
   termsOfService: https://turbopuffer.com/terms-of-service
-  contact: info@turbopuffer.com
+  contact: 
+    email: info@turbopuffer.com
 
 servers:
   - url: https://{region}.turbopuffer.com
