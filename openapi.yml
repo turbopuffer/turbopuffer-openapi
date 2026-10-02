@@ -993,6 +993,17 @@ components:
           # config by omitting this variant.
           x-stainless-skip: [ go ]
         - { $ref: "#/components/schemas/AttributeSchemaConfig" }
+        - { $ref: "#/components/schemas/AttributeSchemaDrop" }
+    AttributeSchemaDrop:
+      description: >
+        Drops the attribute from the namespace. Cannot be combined with other
+        schema settings.
+      type: object
+      properties:
+        drop:
+          description: Must be `true`.
+          type: boolean
+      required: [ drop ]
     AttributeSchemaConfig:
       description: >
         Detailed configuration for an attribute attached to a document.
