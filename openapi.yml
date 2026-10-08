@@ -683,6 +683,14 @@ components:
         server_total_ms:
           type: integer
           description: Request time measured on the server, in milliseconds.
+        embedding_tokens:
+          type: integer
+          description: >
+            The number of tokens embedded. Only set when using a native embedding model.
+        embedding_ms:
+          type: integer
+          description: >
+            Time spent embedding text, in milliseconds. Only set when using a native embedding model.
       required: [ server_total_ms ]
     WriteResult:
       description: The response to a successful write request.
@@ -853,6 +861,14 @@ components:
         approx_namespace_size:
           type: integer
           description: the approximate number of documents in the namespace.
+        embedding_tokens:
+          type: integer
+          description: >
+            The number of tokens embedded. Only set when using a native embedding model.
+        embedding_ms:
+          type: integer
+          description: >
+            Time spent embedding text, in milliseconds. Only set when using a native embedding model.
       required:
         - cache_hit_ratio
         - cache_temperature
