@@ -549,7 +549,10 @@ components:
                 unindexed_bytes:
                   type: integer
                   description: The number of bytes in the namespace that are in the write-ahead log but have not yet been indexed.
-              required: [ status, unindexed_bytes ]
+                unindexed_rows:
+                  type: integer
+                  description: The number of rows in the write-ahead log that have not yet been indexed.
+              required: [ status, unindexed_bytes, unindexed_rows ]
         pinning: { $ref: "#/components/schemas/PinningConfigResponse" }
         sharding: { $ref: "#/components/schemas/ShardingConfig" }
         read_only:
@@ -858,10 +861,6 @@ components:
         approx_namespace_size:
           type: integer
           description: the approximate number of documents in the namespace.
-        last_included_write_at:
-          type: string
-          format: date-time
-          description: The timestamp of the last write operation that the query observed.
         embedding_tokens:
           type: integer
           description: >
