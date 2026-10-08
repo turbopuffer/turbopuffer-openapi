@@ -549,7 +549,10 @@ components:
                 unindexed_bytes:
                   type: integer
                   description: The number of bytes in the namespace that are in the write-ahead log but have not yet been indexed.
-              required: [ status, unindexed_bytes ]
+                unindexed_rows:
+                  type: integer
+                  description: The number of rows in the write-ahead log that have not yet been indexed.
+              required: [ status, unindexed_bytes, unindexed_rows ]
         pinning: { $ref: "#/components/schemas/PinningConfigResponse" }
         sharding: { $ref: "#/components/schemas/ShardingConfig" }
         read_only:
