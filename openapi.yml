@@ -175,6 +175,28 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/ErrorResponse" }
 
+  /v2/namespaces/{namespace}/read_only_optimize:
+    post:
+      description: Optimize a namespace for a read-only workload.
+      parameters:
+        - { $ref: "#/components/parameters/namespace" }
+      responses:
+        "200":
+          description: The namespace is optimized for a read-only workload.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ReadOnlyOptimizeResponse" }
+        "202":
+          description: The optimization was accepted and is in progress.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ReadOnlyOptimizeResponse" }
+        default:
+          description: An error response.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+
   /v1/namespaces/{namespace}/_debug/recall:
     post:
       description: Evaluate recall.
@@ -549,7 +571,10 @@ components:
                 unindexed_bytes:
                   type: integer
                   description: The number of bytes in the namespace that are in the write-ahead log but have not yet been indexed.
-              required: [ status, unindexed_bytes ]
+                unindexed_rows:
+                  type: integer
+                  description: The number of rows in the write-ahead log that have not yet been indexed.
+              required: [ status, unindexed_bytes, unindexed_rows ]
         pinning: { $ref: "#/components/schemas/PinningConfigResponse" }
         sharding: { $ref: "#/components/schemas/ShardingConfig" }
         read_only:
@@ -680,6 +705,14 @@ components:
         server_total_ms:
           type: integer
           description: Request time measured on the server, in milliseconds.
+        embedding_tokens:
+          type: integer
+          description: >
+            The number of tokens embedded. Only set when using a native embedding model.
+        embedding_ms:
+          type: integer
+          description: >
+            Time spent embedding text, in milliseconds. Only set when using a native embedding model.
       required: [ server_total_ms ]
     WriteResult:
       description: The response to a successful write request.
@@ -850,6 +883,14 @@ components:
         approx_namespace_size:
           type: integer
           description: the approximate number of documents in the namespace.
+        embedding_tokens:
+          type: integer
+          description: >
+            The number of tokens embedded. Only set when using a native embedding model.
+        embedding_ms:
+          type: integer
+          description: >
+            Time spent embedding text, in milliseconds. Only set when using a native embedding model.
       required:
         - cache_hit_ratio
         - cache_temperature
@@ -1137,6 +1178,20 @@ components:
           properties:
             error:
               $ref: "#/components/schemas/OperationError"
+    ReadOnlyOptimizeResponse:
+      description: The response to a successful read-only optimize request.
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [ "OK", "ACCEPTED" ]
+          description: >
+            `OK` if the namespace is optimized for a read-only workload,
+            or `ACCEPTED` if the optimization is in progress.
+        message:
+          type: string
+        billing: { $ref: "#/components/schemas/WriteBilling" }
+      required: [ status ]
     OperationError:
       type: object
       required: [ status_code, detail ]
