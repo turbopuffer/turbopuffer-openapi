@@ -339,10 +339,7 @@ paths:
                       description: >
                         How to combine the rows returned by each sub-query into
                         a single ranked list using RRF or a reranking model.
-                      anyOf:
-                        - { $ref: "#/components/schemas/RerankModelParams" }
-                        - description: Rerank with RRF.
-                          x-stainless-any: true
+                      x-stainless-any: true
                     limit:
                       description: Limits the total number of reranked documents returned.
                       anyOf:
@@ -2426,7 +2423,7 @@ components:
     RerankBy:
       description: >
         Configuration for combining the rows returned by a multi-query into a
-        single ranked list.
+        single ranked list, using RRF or a reranking model.
       anyOf:
         - type: array
           description: Rerank with RRF.
@@ -2440,6 +2437,8 @@ components:
             - $ref: "#/components/schemas/RrfParams"
           additionalItems: false
           x-turbopuffer-variant-name: RrfWithParams
+        - $ref: "#/components/schemas/RerankModelParams"
+          x-turbopuffer-variant-name: Model
     ExprVectorDist:
       type: array
       description: The distance between a vector attribute and a query vector.
