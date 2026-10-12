@@ -302,6 +302,9 @@ paths:
               allOf:
                 - { $ref: "#/components/schemas/QueryConfig" }
                 - { $ref: "#/components/schemas/Query" }
+                - type: object
+                  properties:
+                    rerank_by: { $ref: "#/components/schemas/RerankModelParams" }
 
       responses:
         "200":
@@ -335,8 +338,11 @@ paths:
                     rerank_by:
                       description: >
                         How to combine the rows returned by each sub-query into
-                        a single ranked list.
-                      x-stainless-any: true
+                        a single ranked list using RRF or a reranking model.
+                      anyOf:
+                        - { $ref: "#/components/schemas/RerankModelParams" }
+                        - description: Rerank with RRF.
+                          x-stainless-any: true
                     limit:
                       description: Limits the total number of reranked documents returned.
                       anyOf:
@@ -2399,6 +2405,23 @@ components:
             type: number
             format: float
             exclusiveMinimum: 0
+      additionalProperties: false
+    RerankModelParams:
+      description: Rerank retrieved candidates with a model.
+      type: object
+      properties:
+        model:
+          type: string
+          description: The reranking model to use.
+        attribute:
+          type: string
+          description: >
+            The string attribute to score. Must be included in `include_attributes`
+            in every query.
+        query:
+          type: string
+          description: The query text to score each document against.
+      required: [ model, attribute, query ]
       additionalProperties: false
     RerankBy:
       description: >
