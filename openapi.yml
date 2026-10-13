@@ -2409,9 +2409,7 @@ components:
       properties:
         model:
           type: string
-          description: >
-            The reranking model to use, for example `voyage/rerank-3`. See
-            https://turbopuffer.com/docs/reranking#models for the available models.
+          description: Which reranking model to use.
         attribute:
           type: string
           description: >
