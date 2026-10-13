@@ -338,7 +338,7 @@ paths:
                     rerank_by:
                       description: >
                         How to combine the rows returned by each sub-query into
-                        a single ranked list using RRF or a reranking model.
+                        a single ranked list.
                       x-stainless-any: true
                     limit:
                       description: Limits the total number of reranked documents returned.
