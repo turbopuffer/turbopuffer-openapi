@@ -302,6 +302,9 @@ paths:
               allOf:
                 - { $ref: "#/components/schemas/QueryConfig" }
                 - { $ref: "#/components/schemas/Query" }
+                - type: object
+                  properties:
+                    rerank_by: { $ref: "#/components/schemas/RerankModelParams" }
 
       responses:
         "200":
@@ -2400,10 +2403,27 @@ components:
             format: float
             exclusiveMinimum: 0
       additionalProperties: false
+    RerankModelParams:
+      description: Rerank retrieved candidates with a model.
+      type: object
+      properties:
+        model:
+          type: string
+          description: The reranking model to use.
+        attribute:
+          type: string
+          description: >
+            The string attribute to score. Must be included in `include_attributes`
+            in every query.
+        query:
+          type: string
+          description: The query text to score each document against.
+      required: [ model, attribute, query ]
+      additionalProperties: false
     RerankBy:
       description: >
         Configuration for combining the rows returned by a multi-query into a
-        single ranked list.
+        single ranked list, using RRF or a reranking model.
       anyOf:
         - type: array
           description: Rerank with RRF.
@@ -2417,6 +2437,8 @@ components:
             - $ref: "#/components/schemas/RrfParams"
           additionalItems: false
           x-turbopuffer-variant-name: RrfWithParams
+        - $ref: "#/components/schemas/RerankModelParams"
+          x-turbopuffer-variant-name: Model
     ExprVectorDist:
       type: array
       description: The distance between a vector attribute and a query vector.
