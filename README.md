@@ -21,3 +21,4 @@ Our official clients are generated from this spec:
 - [turbopuffer-java](https://github.com/turbopuffer/turbopuffer-java) (Java)
 - [turbopuffer-ruby](https://github.com/turbopuffer/turbopuffer-ruby) (Ruby)
 - [turbopuffer-csharp](https://github.com/turbopuffer/turbopuffer-csharp) (C#)
+- [turbopuffer-rust](https://github.com/turbopuffer/turbopuffer-rust) (Rust)
