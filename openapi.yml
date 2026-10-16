@@ -677,13 +677,12 @@ components:
             created, and a 404 is returned if it does not exist. If omitted, a
             namespace is created by the first request that writes documents.
     PatchByFilter:
-      description: The patch and filter specifying which documents to patch.
+      description: Sets the attributes in `patch` on every document that matches `filters`.
       required: [ patch, filters ]
       properties:
         patch:
           type: object
           additionalProperties: true
-          description: The attributes to set on every document that matches `filters`.
         filters:
           x-stainless-any: true
           description: Filter by attributes. Same syntax as the query endpoint.
@@ -809,10 +808,8 @@ components:
           additionalProperties: true
         distance_metric: { $ref: "#/components/schemas/DistanceMetric" }
         limit:
-          description: Limits the documents returned by a query.
           anyOf:
             - type: integer
-              description: Limits the total number of documents returned.
               # Since Go doesn't support sum types, this syntax sugar is actually
               # an ergonomic loss. So just force Go users to always use the full
               # config by omitting this variant.
@@ -899,7 +896,11 @@ components:
         - exhaustive_search_count
         - approx_namespace_size
     QueryResult:
-      description: The result of a query.
+      description: >
+        The result of a query. With `aggregate_by`, `aggregations` maps each
+        aggregation's label to its value. With `group_by` as well,
+        `aggregation_groups` holds one object per group instead, with its group
+        key and the value of each aggregation.
       type: object
       allOf:
         - $ref: "#/components/schemas/SingleQueryResult"
@@ -922,22 +923,20 @@ components:
         billing: { $ref: "#/components/schemas/QueryBilling" }
       required: [ performance, billing, results ]
     SingleQueryResult:
-      description: The result of a query, or of one subquery of a multi-query.
+      description: >
+        The result of a query, or of one subquery of a multi-query. With
+        `aggregate_by`, `aggregations` maps each aggregation's label to its
+        value. With `group_by` as well, `aggregation_groups` holds one object
+        per group instead, with its group key and the value of each
+        aggregation.
       type: object
       properties:
         aggregations:
           type: object
           additionalProperties: true
-          description: >
-            The value of each requested aggregation, keyed by its label. Only
-            present when `aggregate_by` is set without `group_by`.
         aggregation_groups:
           type: array
           items: { $ref: "#/components/schemas/AggregationGroup" }
-          description: >
-            One object per aggregation group, with its group key and the value of
-            each requested aggregation. Only present when `aggregate_by` and
-            `group_by` are both set.
         rows:
           type: array
           items: { $ref: "#/components/schemas/Row" }
