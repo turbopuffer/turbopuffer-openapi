@@ -758,6 +758,14 @@ components:
             in v2 queries with an explicit `rank_by` and `top_k` or `limit`.
           type: integer
           minimum: 0
+        search_effort:
+          description: >
+            Multiplies the number of clusters searched by an ANN query. Higher
+            values improve recall at the cost of latency. Queried bytes are
+            billed proportionally. Between 0.01 and 100, defaults to 1.
+          type: number
+          minimum: 0.01
+          maximum: 100
         filters:
           description: >
             Exact filters for attributes to refine search results for.
