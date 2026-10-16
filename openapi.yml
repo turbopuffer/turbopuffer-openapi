@@ -761,11 +761,11 @@ components:
         search_effort:
           description: >
             Multiplies the number of clusters searched by an ANN query. Higher
-            values improve recall at the cost of latency. Billed as that many
-            queries, rounded up. Between 1 and 10, defaults to 1.
+            values improve recall at the cost of latency. Queried bytes are
+            billed proportionally. Between 0.01 and 100, defaults to 1.
           type: number
-          minimum: 1
-          maximum: 10
+          minimum: 0.01
+          maximum: 100
         filters:
           description: >
             Exact filters for attributes to refine search results for.
