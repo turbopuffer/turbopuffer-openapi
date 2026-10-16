@@ -228,7 +228,13 @@ paths:
                     type: array
                     items:
                       type: object
-                      description: The ground truth for one of the queries.
+                      description: >
+                        One of the searches the evaluation ran: its query vector,
+                        sampled at random from the namespace's vectors unless
+                        `rank_by` is set, and the query's true nearest neighbors,
+                        found by exhaustive search. Recall compares these
+                        neighbors to the results of the approximate nearest
+                        neighbor (ANN) search.
                       properties:
                         query_vector:
                           description: The query vector used for this search.
@@ -2313,11 +2319,17 @@ components:
       additionalItems: false
     RankByText:
       description: >
-        Rank by full-text search (BM25) relevance, or by combining scores with
-        operators like `Sum`, `Max`, and `Product`.
+        Rank by BM25 (Best Matching 25, a classic full-text search scoring function,
+        which scores documents higher when they contain more of the query's terms,
+        especially rare ones), or by combining scores with operators like `Sum`,
+        `Max`, and `Product`.
       anyOf:
         - type: array
-          description: Rank by the BM25 relevance of an attribute to a query string.
+          description: >
+            Rank by how relevant an attribute is to a query string, using BM25 (Best
+            Matching 25, a classic full-text search scoring function, which scores
+            documents higher when they contain more of the query's terms, especially
+            rare ones).
           prefixItems:
             - type: string
               title: attr
@@ -2328,7 +2340,11 @@ components:
               title: value
           additionalItems: false
         - type: array
-          description: Rank by the BM25 relevance of an attribute to a list of query tokens.
+          description: >
+            Rank by how relevant an attribute is to a list of query tokens, using
+            BM25 (Best Matching 25, a classic full-text search scoring function,
+            which scores documents higher when they contain more of the query's
+            terms, especially rare ones).
           prefixItems:
             - type: string
               title: attr
@@ -2342,8 +2358,10 @@ components:
           x-turbopuffer-variant-name: BM25Array
         - type: array
           description: >
-            Rank by the BM25 relevance of an attribute to a query string, with
-            additional parameters.
+            Rank by how relevant an attribute is to a query string, using BM25 (Best
+            Matching 25, a classic full-text search scoring function, which scores
+            documents higher when they contain more of the query's terms, especially
+            rare ones), with additional parameters.
           prefixItems:
             - type: string
               title: attr
@@ -2358,8 +2376,10 @@ components:
           x-turbopuffer-variant-name: BM25WithParams
         - type: array
           description: >
-            Rank by the BM25 relevance of an attribute to a list of query tokens,
-            with additional parameters.
+            Rank by how relevant an attribute is to a list of query tokens, using
+            BM25 (Best Matching 25, a classic full-text search scoring function,
+            which scores documents higher when they contain more of the query's
+            terms, especially rare ones), with additional parameters.
           prefixItems:
             - type: string
               title: attr
@@ -2437,8 +2457,10 @@ components:
         - type: array
           description: >
             Map a non-negative score into `[0, 1)` with `x^exponent / (x^exponent +
-            midpoint^exponent)`, e.g. to combine an attribute's value with BM25
-            scores.
+            midpoint^exponent)`, e.g. to combine an attribute's value with scores
+            from BM25 (Best Matching 25, a classic full-text search scoring
+            function, which scores documents higher when they contain more of the
+            query's terms, especially rare ones).
           prefixItems:
             - const: Saturate
             - $ref: "#/components/schemas/RankByText"
