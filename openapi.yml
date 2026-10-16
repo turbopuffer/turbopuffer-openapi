@@ -952,8 +952,9 @@ components:
           format: uuid
         - description: A string ID.
           type: string
-        - description: An integer ID.
+        - description: An unsigned 64-bit integer ID.
           type: integer
+          minimum: 0
       description: An identifier for a document.
     Vector:
       description: A vector embedding associated with a document.
