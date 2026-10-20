@@ -1559,6 +1559,28 @@ components:
                 The name of the attribute to sum (must be of numeric type).
           additionalItems: false
         - type: array
+          description: >
+            The unique non-null values of the given attribute, sorted. Omitted
+            from the results if there are more than 10,000 unique values.
+          prefixItems:
+            - const: Distinct
+            - type: string
+              title: attr
+              description: >
+                The name of the attribute (must be of a scalar type).
+          additionalItems: false
+        - type: array
+          description: >
+            Count the unique non-null values of the given attribute. Omitted
+            from the results if there are more than 10,000 unique values.
+          prefixItems:
+            - const: CountDistinct
+            - type: string
+              title: attr
+              description: >
+                The name of the attribute (must be of a scalar type).
+          additionalItems: false
+        - type: array
           description: Count documents with a non-null value for the given attribute.
           prefixItems:
             - const: Count
