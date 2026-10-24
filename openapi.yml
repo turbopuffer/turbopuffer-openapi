@@ -855,6 +855,7 @@ components:
             max_staleness_seconds:
               type: integer
               minimum: 1
+              maximum: 3600
               description: >
                 How long an eventually consistent query may reuse the node's
                 cached view of the namespace before refreshing it from object
