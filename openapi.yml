@@ -852,6 +852,13 @@ components:
                     Eventual consistency. Does not require a round-trip to
                     object storage, but may not see the latest writes.
               description: The query's consistency level.
+            max_staleness_seconds:
+              type: integer
+              minimum: 1
+              description: >
+                How long an eventually consistent query may reuse the node's
+                cached view of the namespace before refreshing it from object
+                storage. Only valid with `level: eventual`. Defaults to 60.
     RerankLimit:
       description: Limits the total number of reranked documents returned.
       type: object
