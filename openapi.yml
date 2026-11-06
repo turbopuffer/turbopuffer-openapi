@@ -578,6 +578,7 @@ components:
               required: [ status, unindexed_bytes, unindexed_rows ]
         pinning: { $ref: "#/components/schemas/PinningConfigResponse" }
         sharding: { $ref: "#/components/schemas/ShardingConfig" }
+        layout: { $ref: "#/components/schemas/Layout" }
         read_only:
           type: boolean
           description: >
@@ -670,6 +671,7 @@ components:
           default: false
         encryption: { $ref: "#/components/schemas/Encryption" }
         sharding: { $ref: "#/components/schemas/ShardingConfig" }
+        layout: { $ref: "#/components/schemas/Layout" }
         disable_backpressure:
           type: boolean
           description: >
@@ -1547,6 +1549,20 @@ components:
           minimum: 1
           description: The number of shards to partition the namespace into.
       required: [ num_shards ]
+
+    Layout:
+      description: >
+        Experimental. How a namespace stores its documents. Can only be set on
+        a namespace's inaugural write, and cannot be changed later.
+      type: object
+      properties:
+        arrange_by:
+          type: string
+          description: >
+            Stores documents in ranges of this attribute, ordered by it, so
+            queries filtering on a narrow range of it or ordered by it skip the
+            rest. Documents should be written in roughly ascending order of it.
+            Must have type `int`, `uint`, `datetime` or `string`.
 
     ErrorResponse:
       description: The response to an unsuccessful request.
