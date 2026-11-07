@@ -578,6 +578,7 @@ components:
               required: [ status, unindexed_bytes, unindexed_rows ]
         pinning: { $ref: "#/components/schemas/PinningConfigResponse" }
         sharding: { $ref: "#/components/schemas/ShardingConfig" }
+        layout: { $ref: "#/components/schemas/Layout" }
         read_only:
           type: boolean
           description: >
@@ -670,6 +671,7 @@ components:
           default: false
         encryption: { $ref: "#/components/schemas/Encryption" }
         sharding: { $ref: "#/components/schemas/ShardingConfig" }
+        layout: { $ref: "#/components/schemas/Layout" }
         disable_backpressure:
           type: boolean
           description: >
@@ -1547,6 +1549,29 @@ components:
           minimum: 1
           description: The number of shards to partition the namespace into.
       required: [ num_shards ]
+
+    Layout:
+      description: >
+        Experimental. How a namespace stores its documents. A change applies to
+        documents indexed after it.
+      type: object
+      properties:
+        rank_by:
+          type: array
+          description: >
+            Stores documents in ranges of an attribute, in ascending order, so
+            queries filtering on a narrow range of it or ranking by it skip the
+            rest. Documents should be written in roughly ascending order of it.
+            Must have type `int`, `uint`, `datetime` or `string`.
+            `["id", "asc"]` resets the namespace to the default layout.
+          prefixItems:
+            - type: string
+              title: attr
+              description: The name of the attribute to store documents by.
+            - const: asc
+              title: order
+              description: Ascending order, the only one supported.
+          additionalItems: false
 
     ErrorResponse:
       description: The response to an unsuccessful request.
