@@ -1556,14 +1556,22 @@ components:
         documents indexed after it.
       type: object
       properties:
-        arrange_by:
-          type: string
+        rank_by:
+          type: array
           description: >
-            Stores documents in ranges of this attribute, ordered by it, so
-            queries filtering on a narrow range of it or ordered by it skip the
+            Stores documents in ranges of an attribute, in ascending order, so
+            queries filtering on a narrow range of it or ranking by it skip the
             rest. Documents should be written in roughly ascending order of it.
-            Must have type `int`, `uint`, `datetime` or `string`. `id` resets
-            the namespace to the default layout.
+            Must have type `int`, `uint`, `datetime` or `string`.
+            `["id", "asc"]` resets the namespace to the default layout.
+          prefixItems:
+            - type: string
+              title: attr
+              description: The name of the attribute to store documents by.
+            - const: asc
+              title: order
+              description: Ascending order, the only one supported.
+          additionalItems: false
 
     ErrorResponse:
       description: The response to an unsuccessful request.
