@@ -1583,6 +1583,45 @@ components:
                 The name of the attribute to sum (must be of numeric type).
           additionalItems: false
         - type: array
+          description: >
+            The mean of the non-null values of the given attribute, as a float.
+            Integer values are accumulated in float64 and round once the running
+            sum passes 2^53. Omitted from the response when every value is null.
+          prefixItems:
+            - const: Avg
+            - type: string
+              title: attr
+              description: >
+                The name of the attribute to average (must be a scalar `int`,
+                `uint`, or `float`).
+          additionalItems: false
+        - type: array
+          description: >
+            The smallest non-null value of the given attribute. Omitted from the
+            response when every value is null.
+          prefixItems:
+            - const: Min
+            - type: string
+              title: attr
+              description: >
+                The name of the attribute (must be a scalar type other than
+                `bytes`: `string`, `int`, `uint`, `float`, `bool`, `uuid`, or
+                `datetime`).
+          additionalItems: false
+        - type: array
+          description: >
+            The largest non-null value of the given attribute. Omitted from the
+            response when every value is null.
+          prefixItems:
+            - const: Max
+            - type: string
+              title: attr
+              description: >
+                The name of the attribute (must be a scalar type other than
+                `bytes`: `string`, `int`, `uint`, `float`, `bool`, `uuid`, or
+                `datetime`).
+          additionalItems: false
+        - type: array
           description: Count documents with a non-null value for the given attribute.
           prefixItems:
             - const: Count
