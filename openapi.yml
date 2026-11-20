@@ -1622,6 +1622,27 @@ components:
                 `datetime`).
           additionalItems: false
         - type: array
+          description: >
+            An estimate of the value at the given quantile of the non-null values
+            of the given attribute, as a float. Computed with an exponential
+            histogram of at most 160 buckets and a maximum scale of 20. The
+            minimum and maximum quantiles are exact. Omitted from the response
+            when every value is null.
+          prefixItems:
+            - const: ApproxPercentile
+            - type: string
+              title: attr
+              description: >
+                The name of the attribute (must be a scalar `int`, `uint`, or
+                `float`).
+            - type: number
+              title: quantile
+              minimum: 0
+              maximum: 1
+              description: >
+                The quantile to estimate, between 0 and 1 (e.g. 0.99 for p99).
+          additionalItems: false
+        - type: array
           description: Count documents with a non-null value for the given attribute.
           prefixItems:
             - const: Count
